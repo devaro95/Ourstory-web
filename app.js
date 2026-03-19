@@ -1963,11 +1963,28 @@ function buildAvatarHTML(imageUrl, name, size, containerClass, initialsClass) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+//  THEME
+// ═══════════════════════════════════════════════════════════════════
+function _applyTheme(dark) {
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+}
+
+function toggleTheme() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const next   = !isDark;
+  _applyTheme(next);
+  localStorage.setItem('os_theme', next ? 'dark' : 'light');
+}
+
+// Apply saved theme immediately (before first paint)
+_applyTheme(localStorage.getItem('os_theme') === 'dark');
+
+// ═══════════════════════════════════════════════════════════════════
 //  BOOTSTRAP
 // ═══════════════════════════════════════════════════════════════════
 Object.assign(window, {
   handleLogoClick, handleNavCta, logout, requireAuth,
-  showPage, scrollToFeed,
+  showPage, scrollToFeed, toggleTheme,
   togglePw, doLogin, openForgotModal, doForgotPassword,
   doRegister, resendVerification,
   switchProfileTab,
