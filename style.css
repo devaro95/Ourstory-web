@@ -20,10 +20,10 @@
   --black:    #f0ede8;
   --white:    #0f0f0f;
   --gray-50:  #1a1a1a;
-  --gray-100: #242424;
-  --gray-300: #5a5750;
-  --gray-500: #8a8780;
-  --gray-700: #d0cdc8;
+  --gray-100: #2e2e2e;
+  --gray-300: #8a8780;
+  --gray-500: #b0ada6;
+  --gray-700: #d8d5d0;
   --red:      #e55c4a;
 }
 
@@ -49,6 +49,8 @@
 /* Footer */
 [data-theme="dark"] footer { background: #0a0a0a; border-top-color: var(--gray-100); }
 [data-theme="dark"] .footer-logo { color: var(--black); }
+[data-theme="dark"] .nav-logo .logo-icon svg { filter: invert(1); }
+[data-theme="dark"] .footer-logo .logo-icon svg { filter: invert(0.15); }
 [data-theme="dark"] .footer-links a { color: var(--gray-300); }
 [data-theme="dark"] .footer-links a:hover { color: var(--black); }
 [data-theme="dark"] .footer-copy { color: var(--gray-300); }
@@ -58,7 +60,10 @@
 [data-theme="dark"] .settings-item { border-bottom-color: var(--gray-100); background: none; }
 [data-theme="dark"] .settings-item:hover { background: var(--gray-50); }
 [data-theme="dark"] .settings-item.danger:hover { background: rgba(192,57,43,0.1); }
-[data-theme="dark"] .settings-item-icon { border-color: var(--gray-100); }
+[data-theme="dark"] .settings-item-icon { border-color: var(--gray-100); color: var(--gray-500); }
+[data-theme="dark"] .settings-item.danger .settings-item-icon { border-color: rgba(192,57,43,0.4); }
+[data-theme="dark"] .settings-item.danger .settings-item-icon svg,
+[data-theme="dark"] .settings-item.danger .settings-item-title { color: var(--red); }
 [data-theme="dark"] .settings-item-title { color: var(--black); }
 [data-theme="dark"] .settings-item-desc { color: var(--gray-300); }
 [data-theme="dark"] .settings-item-arrow { color: var(--gray-300); }
