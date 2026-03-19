@@ -13,6 +13,18 @@ import { apiPOST } from './api.js';
 import { createStoryApi } from '../models/Story.js';
 
 // ─────────────────────────────────────────────────────────────────
+//  Fetch a single story by id  →  POST /functions/v2_getStory
+// ─────────────────────────────────────────────────────────────────
+/**
+ * @param {string} storyId
+ * @returns {Promise<import('../models/Story.js').StoryApi|null>}
+ */
+export async function getStoryById(storyId) {
+  const raw = await apiPOST('functions/v2_getStory', { storyId }, /* withToken= */ false);
+  return raw.result ? createStoryApi(raw.result) : null;
+}
+
+// ─────────────────────────────────────────────────────────────────
 //  Story type enum  (sent as `type` to v2_storyByType)
 // ─────────────────────────────────────────────────────────────────
 /** @enum {string} */
@@ -29,22 +41,28 @@ export const StoryType = {
 //  Response model
 // ─────────────────────────────────────────────────────────────────
 /**
+ * @typedef {Object} AppStats
+ * @property {number} totalUsers
+ * @property {number} totalStories
+ * @property {number} totalCooperativeParagraphs
+ *
  * @typedef {Object} StoriesFeed
  * @property {import('../models/Story.js').StoryApi[]} latest
  * @property {import('../models/Story.js').StoryApi[]} trending
  * @property {import('../models/Story.js').StoryApi[]} following
+ * @property {AppStats} stats
  */
 
-/**
- * Hydrates a raw GetStoriesApi result into a typed StoriesFeed.
- * @param {Object} raw  The `result` field from POST /functions/v2_stories
- * @returns {StoriesFeed}
- */
 function parseStoriesFeed(raw) {
   return {
     latest:    Array.isArray(raw?.latest)     ? raw.latest.map(createStoryApi)     : [],
     trending:  Array.isArray(raw?.trending)   ? raw.trending.map(createStoryApi)   : [],
     following: Array.isArray(raw?.following)  ? raw.following.map(createStoryApi)  : [],
+    stats: {
+      totalUsers:                   Number(raw?.stats?.totalUsers                   ?? 0),
+      totalStories:                 Number(raw?.stats?.totalStories                 ?? 0),
+      totalCooperativeParagraphs:   Number(raw?.stats?.totalCooperativeParagraphs   ?? 0),
+    },
   };
 }
 

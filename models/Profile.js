@@ -19,7 +19,7 @@ import { createStoryApi, createBlockApi } from './Story.js';
  * @property {string|null}  alias         - display name chosen by user
  * @property {string|null}  biography
  * @property {number|null}  aliasChanges
- * @property {string|null}  image         - imageUrl (base64 encoded)
+ * @property {string|null}  image         - imageUrl (plain URL)
  */
 
 /**

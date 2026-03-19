@@ -2,67 +2,104 @@
  * services/AuthService.js
  *
  * Handles authentication against the Parse REST API:
- *   - Login  →  GET /login
+ *   - Login    →  GET  /login
+ *   - Register →  POST /users
+ *   - Verify   →  POST /verificationEmailRequest
  *   - Password reset  →  POST /requestPasswordReset
- *
- * On success, populates and persists the shared session object.
  */
 
 import { apiGET, apiPOST, API_BASE, buildHeaders } from './api.js';
 import { session } from '../models/Session.js';
 
 // ─────────────────────────────────────────────────────────────────
-//  Login  →  ResponseLoginApi
+//  Login
 // ─────────────────────────────────────────────────────────────────
-/**
- * Authenticates the user with username/email + password.
- * Stores the resulting session token on success.
- *
- * @param {string} identifier - username or email
- * @param {string} password
- * @returns {Promise<{username: string}>} Resolved user data
- * @throws Parse-style error with `.status` code (101 = invalid credentials)
- */
 export async function login(identifier, password) {
   const data = await apiGET('login', { username: identifier, password }, false);
-
   session.token    = data.sessionToken ?? null;
   session.userId   = data.objectId     ?? null;
   session.username = data.username     ?? identifier;
   session.email    = data.email        ?? null;
   session.save();
-
   return { username: session.username };
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Register  →  POST /users
+// ─────────────────────────────────────────────────────────────────
+/**
+ * Creates a new user account.
+ * On success, stores the session token and returns user data.
+ * Does NOT navigate — caller decides what to do next (show verify screen).
+ *
+ * @param {string} username
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<{username: string, email: string}>}
+ */
+export async function register(username, email, password) {
+  const data = await apiPOST('users', { username, email, password, alias: username }, /* withToken= */ false);
+  session.token    = data.sessionToken ?? null;
+  session.userId   = data.objectId     ?? null;
+  session.username = username;
+  session.email    = email;
+  session.save();
+  return { username, email };
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Send / resend verification email  →  POST /verificationEmailRequest
+// ─────────────────────────────────────────────────────────────────
+/**
+ * Triggers a verification email for the given address.
+ * Safe to call multiple times (rate-limited in the UI, not here).
+ *
+ * @param {string} email
+ * @returns {Promise<void>}
+ */
+export async function sendVerificationEmail(email) {
+  await fetch(API_BASE + 'verificationEmailRequest', {
+    method:  'POST',
+    headers: buildHeaders(false),
+    body:    JSON.stringify({ email }),
+  });
 }
 
 // ─────────────────────────────────────────────────────────────────
 //  Password reset
 // ─────────────────────────────────────────────────────────────────
-/**
- * Requests a password-reset email from Parse.
- * Back4App returns 200 regardless of whether the email exists — this is
- * intentional to avoid user enumeration.
- *
- * @param {string} email
- * @returns {Promise<void>}
- */
 export async function requestPasswordReset(email) {
   await fetch(API_BASE + 'requestPasswordReset', {
     method:  'POST',
     headers: buildHeaders(false),
     body:    JSON.stringify({ email }),
   });
-  // We intentionally do not check the response status here — see JSDoc above.
 }
 
 // ─────────────────────────────────────────────────────────────────
-//  Logout (client-side only — no API call needed for Parse sessions)
+//  Change password  →  POST /functions/v2_changePassword
 // ─────────────────────────────────────────────────────────────────
 /**
- * Clears the local session without calling the API.
- * (A production app would also call DELETE /logout to invalidate the token
- * server-side; add that here when the endpoint is available.)
+ * Changes the user's password. On success the API returns a new session
+ * token (the old one is invalidated), which we store immediately.
+ *
+ * @param {string} currentPassword
+ * @param {string} newPassword
+ * @returns {Promise<void>}
  */
+export async function changePassword(currentPassword, newPassword) {
+  const raw = await apiPOST('functions/v2_changePassword', { currentPassword, newPassword }, /* withToken= */ true);
+  // Store the new session token returned by the API
+  const newToken = raw.result?.token;
+  if (newToken) {
+    session.token = newToken;
+    session.save();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+//  Logout
+// ─────────────────────────────────────────────────────────────────
 export function logout() {
   session.clear();
 }
