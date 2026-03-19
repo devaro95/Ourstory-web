@@ -482,7 +482,7 @@ nav {
   color: var(--gray-700);
   transition: color 0.2s ease;
 }
-.story-title { font-family: var(--grand); font-size: 1.5rem; line-height: 1.2; margin-bottom: 0.75rem; transition: color 0.2s ease; }
+.story-title { font-family: var(--grand); font-size: 1.5rem; font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; transition: color 0.2s ease; }
 .story-card:nth-child(3n) { border-right: none; }
 .story-card:nth-last-child(-n+3) { border-bottom: none; }
 .story-meta { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
@@ -644,7 +644,7 @@ footer { padding: 2.5rem 3rem; border-top: 1px solid var(--gray-700); background
 
 .detail-words-title {
   font-family: var(--grand); font-size: clamp(2rem, 4vw, 3.5rem);
-  line-height: 1.05; margin-bottom: 1.5rem;
+  font-weight: 400; line-height: 1.05; margin-bottom: 1.5rem;
 }
 
 .detail-word-pills-row {
@@ -709,7 +709,7 @@ footer { padding: 2.5rem 3rem; border-top: 1px solid var(--gray-700); background
 .detail-collab-action.liked svg { fill: currentColor; }
 .detail-collab-action.saved svg { fill: currentColor; }
 
-.detail-collab-title { font-family: var(--grand); font-size: clamp(2rem, 4vw, 3.5rem); line-height: 1.05; margin-bottom: 1.5rem; }
+.detail-collab-title { font-family: var(--grand); font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400; line-height: 1.05; margin-bottom: 1.5rem; }
 .detail-collab-authors { display: flex; align-items: center; gap: 0.5rem; background: none; border: none; padding: 0; cursor: pointer; transition: opacity var(--t); }
 .detail-collab-authors:hover { opacity: 0.75; }
 .collab-avatar-stack { display: flex; }
