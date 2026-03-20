@@ -1264,6 +1264,8 @@ footer { padding: 2.5rem 3rem; border-top: 1px solid var(--gray-700); background
 
 .edit-profile-fields { margin-bottom: 2rem; }
 .edit-profile-actions { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+.edit-profile-actions .btn-secondary,
+.edit-profile-actions .login-btn { width: 160px; height: 46px; margin-top: 0; padding: 0; justify-content: center; }
 
 @media (max-width: 900px) {
   .edit-profile-wrap { padding: 2rem 1.5rem; }
