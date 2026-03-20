@@ -871,7 +871,7 @@ function switchProfileTab(tab, btn) {
 }
 
 // ── Story card (shared between feed and profile grids) ────────────
-function storyCardHTML(s) {
+function storyCardHTML(s, guestMode = false) {
   const isCollab = s.isCooperative === true;
   const badge    = isCollab
     ? `<span class="story-mode-badge collab">colaborativa</span>`
@@ -959,7 +959,7 @@ function storyCardHTML(s) {
         <p class="story-excerpt">${excerpt}</p>
         <div class="story-footer" onclick="event.stopPropagation()">
           ${authorAreaHTML}
-          <div class="story-actions">
+          ${guestMode ? '' : `<div class="story-actions">
             <button class="action-btn${likedCls}" onclick="toggleLike(this)">
               <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               <span>${s.likes || 0}</span>
@@ -967,7 +967,7 @@ function storyCardHTML(s) {
             <button class="action-btn${savedCls}" onclick="saveStory(this)">
               <svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
             </button>
-          </div>
+          </div>`}
         </div>
       </a>
     </article>`;
@@ -1402,13 +1402,20 @@ function renderFeedPanel(tabKey, stories, layout) {
     if (moreEl) moreEl.style.display = 'none';
     return;
   }
-  const cls = layout === 'stream' ? 'story-stream' : 'story-grid-3';
-  contentEl.innerHTML = `<div class="${cls}">${stories.map(storyCardHTML).join('')}</div>`;
-  if (moreEl) moreEl.style.display = 'none'; // replaced by infinite scroll
 
-  // Attach infinite scroll sentinel
-  const TYPE_MAP = { latest: 'LATEST', trending: 'TRENDING', following: 'FOLLOWING' };
-  _attachSentinel('feed', tabKey, TYPE_MAP[tabKey]);
+  // Guest view: show only first 6 stories, no infinite scroll, no like/save
+  const isGuest    = !session.isLoggedIn;
+  const displayed  = isGuest ? stories.slice(0, 6) : stories;
+  const cls        = layout === 'stream' ? 'story-stream' : 'story-grid-3';
+  contentEl.innerHTML = `<div class="${cls}">${displayed.map(s => storyCardHTML(s, isGuest)).join('')}</div>`;
+
+  if (moreEl) moreEl.style.display = 'none';
+
+  if (!isGuest) {
+    // Attach infinite scroll sentinel only for logged-in users
+    const TYPE_MAP = { latest: 'LATEST', trending: 'TRENDING', following: 'FOLLOWING' };
+    _attachSentinel('feed', tabKey, TYPE_MAP[tabKey]);
+  }
 }
 
 function renderFeedError(tabKey) {
