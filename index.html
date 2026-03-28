@@ -72,6 +72,12 @@
         Crear historia
       </a>
     </li>
+    <li id="navSearchItem" style="display:none;">
+      <button class="nav-search-btn" onclick="openSearchModal()" title="Buscar usuarios">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Buscar
+      </button>
+    </li>
   </ul>
 
   <!-- Right: theme toggle + login/user area -->
@@ -1226,6 +1232,39 @@
     <h1 class="not-found-title">Página no encontrada</h1>
     <p class="not-found-sub">El enlace que seguiste no existe o ha sido eliminado.</p>
     <a href="#" class="btn-primary" onclick="event.preventDefault(); location.hash='home'">Volver al inicio</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MODAL: SEARCH USERS
+══════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modalSearch">
+  <div class="modal search-modal">
+    <div class="search-modal-header">
+      <div class="search-input-wrap">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Buscar por nombre de usuario..."
+          oninput="onSearchInput(this.value)"
+          autocomplete="off"
+          autocorrect="off"
+          spellcheck="false"
+        >
+        <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" style="display:none;">
+          <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <button class="search-cancel-btn" onclick="closeAllModals()">Cancelar</button>
+    </div>
+    <div id="searchResults" class="search-results">
+      <div class="search-empty-state" id="searchEmptyState">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>Escribe para buscar escritores</p>
+      </div>
+    </div>
   </div>
 </div>
 

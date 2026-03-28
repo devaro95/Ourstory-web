@@ -15,6 +15,7 @@ import { getStories, getStoriesByType,
 import { addLike, removeLike }              from './services/LikeService.js';
 import { saveStoryApi, unsaveStoryApi }     from './services/SaveService.js';
 import { reportStory }                      from './services/ReportService.js';
+import { searchUsers }                      from './services/SearchService.js';
 import { getUserDetail }                    from './services/UserService.js';
 import { followUser, unfollowUser,
          blockUser, unblockUser }           from './services/SocialService.js';
@@ -34,6 +35,7 @@ function updateNav() {
   document.getElementById('navInicioItem').style.display    = li ? 'none' : '';
   document.getElementById('navHistoriasItem').style.display = li ? 'none' : '';
   document.getElementById('navCreateItem').style.display    = li ? '' : 'none';
+  document.getElementById('navSearchItem').style.display    = li ? '' : 'none';
   if (li) {
     const displayName = session.alias || session.username || '';
     document.getElementById('navUserName').textContent = displayName;
@@ -1998,6 +2000,107 @@ function buildAvatarHTML(imageUrl, name, size, containerClass, initialsClass) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+//  SEARCH
+// ═══════════════════════════════════════════════════════════════════
+let _searchDebounce = null;
+
+function openSearchModal() {
+  openModal('search');
+  // Focus input after modal animation
+  setTimeout(() => document.getElementById('searchInput')?.focus(), 80);
+}
+
+function clearSearch() {
+  const input = document.getElementById('searchInput');
+  input.value = '';
+  document.getElementById('searchClearBtn').style.display = 'none';
+  _renderSearchEmpty();
+  input.focus();
+  clearTimeout(_searchDebounce);
+}
+
+function onSearchInput(value) {
+  const clearBtn = document.getElementById('searchClearBtn');
+  clearBtn.style.display = value.length ? 'flex' : 'none';
+
+  clearTimeout(_searchDebounce);
+
+  if (!value.trim()) {
+    _renderSearchEmpty();
+    return;
+  }
+
+  // Show "buscando..." state while debouncing
+  _renderSearchLoading();
+
+  // Debounce: wait 300ms after user stops typing
+  _searchDebounce = setTimeout(() => _doSearch(value.trim()), 300);
+}
+
+async function _doSearch(term) {
+  _renderSearchLoading();
+  try {
+    const results = await searchUsers(term);
+    _renderSearchResults(results, term);
+  } catch (e) {
+    console.error('Search error:', e);
+    _renderSearchError();
+  }
+}
+
+function _renderSearchEmpty() {
+  document.getElementById('searchResults').innerHTML = `
+    <div class="search-empty-state" id="searchEmptyState">
+      <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <p>Escribe para buscar escritores</p>
+    </div>`;
+}
+
+function _renderSearchLoading() {
+  document.getElementById('searchResults').innerHTML = `
+    <div class="search-empty-state">
+      <div class="loading-spinner" style="width:20px;height:20px;border-width:2px;"></div>
+      <p>Buscando...</p>
+    </div>`;
+}
+
+function _renderSearchError() {
+  document.getElementById('searchResults').innerHTML = `
+    <div class="search-empty-state">
+      <p style="color:var(--red);">Error al buscar. Inténtalo de nuevo.</p>
+    </div>`;
+}
+
+function _renderSearchResults(results, term) {
+  const container = document.getElementById('searchResults');
+  if (!results.length) {
+    container.innerHTML = `
+      <div class="search-empty-state">
+        <p>No se encontraron usuarios para <strong>@${escHtml(term)}</strong></p>
+      </div>`;
+    return;
+  }
+  container.innerHTML = results.map(u => {
+    const ini     = (u.username || '?').slice(0, 2).toUpperCase();
+    const isMe    = u.id === session.userId;
+    return `
+      <button class="search-result-item" onclick="searchGoToProfile('${u.id}')">
+        <div class="search-result-avatar">${ini}</div>
+        <div class="search-result-info">
+          <span class="search-result-username">@${escHtml(u.username || '')}</span>
+          ${isMe ? '<span class="search-result-you">Tú</span>' : ''}
+        </div>
+        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>`;
+  }).join('');
+}
+
+function searchGoToProfile(userId) {
+  closeAllModals();
+  openUserProfile(userId);
+}
+
+// ═══════════════════════════════════════════════════════════════════
 //  THEME
 // ═══════════════════════════════════════════════════════════════════
 function _applyTheme(dark) {
@@ -2028,7 +2131,7 @@ Object.assign(window, {
   openBugReportModal, doSendBugReport,
   confirmLogout, doLogout,
   initEditProfilePage, onAvatarFileSelected, removeEditAvatar, doSaveProfile,
-  openCollabAuthorsDialog,
+  openSearchModal, onSearchInput, clearSearch, searchGoToProfile,
   openUserProfile, retryUserProfile, toggleFollowUser, toggleBlockUser,
   openModal, closeAllModals, openModalMode,
   submitWordsStep1, submitWordsStory,
