@@ -162,7 +162,8 @@ async function _route(hash) {
   }
 
   if (page === 'home') {
-    _hasHistory = false; // reset — any future detail open will be from scratch
+    _hasHistory = false;
+    _updateMeta(); // restore default title/description
     _activatePage('home');
     if (session.isLoggedIn) {
       document.getElementById('homeGuest').style.display     = 'none';
@@ -184,8 +185,14 @@ async function _route(hash) {
     return;
   }
 
-  // login, or unknown → just show the page
-  _activatePage(page);
+  // Simple pages with their own HTML (no extra logic needed)
+  if (['login', 'register', 'verify'].includes(page)) {
+    _activatePage(page);
+    return;
+  }
+
+  // Unknown route → 404
+  _activatePage('not-found');
 }
 
 async function _loadDetailPage(storyId) {
@@ -200,6 +207,11 @@ async function _loadDetailPage(storyId) {
     if (story) {
       currentStory = story;
       renderDetail(story);
+      // Update meta tags so shared links show story info
+      _updateMeta(
+        `${story.title || 'Historia'} — Ourstory`,
+        story.content?.[0]?.text?.slice(0, 150) || 'Lee esta historia en Ourstory.'
+      );
     } else {
       location.hash = 'home';
     }
@@ -1159,6 +1171,22 @@ const dashFeedState = {
   following: { page: 0, loading: false, done: false },
 };
 let homeFeedLoaded = false;
+
+// ─── Meta tag updater ─────────────────────────────────────────────
+const _defaultTitle = 'Ourstory — Historias que cobran vida';
+const _defaultDesc  = 'Una red social literaria donde cada historia nace de la colaboración. Escribe, comparte y descubre narrativas únicas creadas entre muchas voces.';
+
+function _updateMeta(title = _defaultTitle, description = _defaultDesc) {
+  document.title = title;
+  const set = (sel, val) => { const el = document.querySelector(sel); if (el) el.setAttribute('content', val); };
+  set('meta[name="description"]',         description);
+  set('meta[property="og:title"]',        title);
+  set('meta[property="og:description"]',  description);
+  set('meta[name="twitter:title"]',       title);
+  set('meta[name="twitter:description"]', description);
+  // Update og:url to current page URL (includes hash for story deep links)
+  set('meta[property="og:url"]', location.href);
+}
 
 // ─── Infinite scroll setup ────────────────────────────────────────
 // Sentinel div at the bottom of each panel. When it enters the

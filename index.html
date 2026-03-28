@@ -3,7 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Primary meta -->
   <title>Ourstory — Historias que cobran vida</title>
+  <meta name="description" content="Una red social literaria donde cada historia nace de la colaboración. Escribe, comparte y descubre narrativas únicas creadas entre muchas voces.">
+  <meta name="author" content="Ourstory">
+  <meta name="theme-color" content="#0a0a0a">
+
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="Ourstory">
+  <meta property="og:title"       content="Ourstory — Historias que cobran vida">
+  <meta property="og:description" content="Una red social literaria donde cada historia nace de la colaboración. Escribe, comparte y descubre narrativas únicas creadas entre muchas voces.">
+  <meta property="og:url"         content="https://ourstory.app">
+  <meta property="og:image"       content="https://ourstory.app/og-image.png">
+  <meta property="og:image:width"  content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale"      content="es_ES">
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@ourstory_app">
+  <meta name="twitter:title"       content="Ourstory — Historias que cobran vida">
+  <meta name="twitter:description" content="Una red social literaria donde cada historia nace de la colaboración. Escribe, comparte y descubre narrativas únicas.">
+  <meta name="twitter:image"       content="https://ourstory.app/og-image.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="logo.svg">
@@ -1191,6 +1214,18 @@
       <button class="modal-close" onclick="closeAllModals()">✕ cerrar</button>
     </div>
     <div id="collabAuthorsList" class="collab-authors-list"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     404 NOT FOUND PAGE
+══════════════════════════════════════════════ -->
+<div id="not-found-page" class="page">
+  <div class="not-found-wrap">
+    <div class="not-found-glyph">✦</div>
+    <h1 class="not-found-title">Página no encontrada</h1>
+    <p class="not-found-sub">El enlace que seguiste no existe o ha sido eliminado.</p>
+    <a href="#" class="btn-primary" onclick="event.preventDefault(); location.hash='home'">Volver al inicio</a>
   </div>
 </div>
 
