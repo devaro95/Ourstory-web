@@ -2003,11 +2003,51 @@ function buildAvatarHTML(imageUrl, name, size, containerClass, initialsClass) {
 //  SEARCH
 // ═══════════════════════════════════════════════════════════════════
 let _searchDebounce = null;
+const RECENT_KEY    = 'os_recent_searches';
+const MAX_RECENT    = 8;
 
+// ─── Recent searches storage ──────────────────────────────────────
+function _getRecent() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]'); } catch { return []; }
+}
+
+function _saveRecent(list) {
+  localStorage.setItem(RECENT_KEY, JSON.stringify(list));
+}
+
+function _addRecent(user) {
+  // user = { id, username, userImage }
+  let list = _getRecent().filter(u => u.id !== user.id); // deduplicate
+  list.unshift(user);                                     // most recent first
+  if (list.length > MAX_RECENT) list = list.slice(0, MAX_RECENT);
+  _saveRecent(list);
+}
+
+function removeRecentSearch(event, userId) {
+  event.stopPropagation();
+  const list = _getRecent().filter(u => u.id !== userId);
+  _saveRecent(list);
+  // Re-render — if input is empty show recents, otherwise keep results
+  const term = document.getElementById('searchInput')?.value.trim();
+  if (!term) _renderSearchEmpty();
+  else _renderSearchResults(
+    document.querySelectorAll('.search-result-item[data-id]')
+      ? [] : [], // just re-render empty; results stay if user is still typing
+    term
+  );
+  // Simpler: just re-render the empty state which shows updated recents
+  if (!term) _renderSearchEmpty();
+}
+
+// ─── Modal open / reset ──────────────────────────────────────────
 function openSearchModal() {
   openModal('search');
-  // Focus input after modal animation
-  setTimeout(() => document.getElementById('searchInput')?.focus(), 80);
+  // Reset state
+  const input = document.getElementById('searchInput');
+  if (input) { input.value = ''; }
+  document.getElementById('searchClearBtn').style.display = 'none';
+  _renderSearchEmpty();
+  setTimeout(() => input?.focus(), 80);
 }
 
 function clearSearch() {
@@ -2020,9 +2060,7 @@ function clearSearch() {
 }
 
 function onSearchInput(value) {
-  const clearBtn = document.getElementById('searchClearBtn');
-  clearBtn.style.display = value.length ? 'flex' : 'none';
-
+  document.getElementById('searchClearBtn').style.display = value.length ? 'flex' : 'none';
   clearTimeout(_searchDebounce);
 
   if (!value.trim()) {
@@ -2030,10 +2068,7 @@ function onSearchInput(value) {
     return;
   }
 
-  // Show "buscando..." state while debouncing
   _renderSearchLoading();
-
-  // Debounce: wait 300ms after user stops typing
   _searchDebounce = setTimeout(() => _doSearch(value.trim()), 300);
 }
 
@@ -2048,12 +2083,50 @@ async function _doSearch(term) {
   }
 }
 
-function _renderSearchEmpty() {
-  document.getElementById('searchResults').innerHTML = `
-    <div class="search-empty-state" id="searchEmptyState">
-      <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      <p>Escribe para buscar escritores</p>
+// ─── Avatar HTML helper ───────────────────────────────────────────
+function _searchAvatarHTML(user) {
+  const ini = (user.username || '?').slice(0, 2).toUpperCase();
+  if (user.userImage) {
+    return `<div class="search-result-avatar"><img src="${user.userImage}" alt="${escHtml(user.username || '')}"></div>`;
+  }
+  return `<div class="search-result-avatar">${ini}</div>`;
+}
+
+// ─── Result item HTML ─────────────────────────────────────────────
+function _resultItemHTML(u, showRemove = false) {
+  const isMe     = u.id === session.userId;
+  const removeBtn = showRemove
+    ? `<button class="search-remove-btn" onclick="removeRecentSearch(event,'${u.id}')" title="Eliminar">
+         <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+       </button>`
+    : `<svg class="search-chevron" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>`;
+
+  return `
+    <div class="search-result-item" data-id="${u.id}" onclick="searchGoToProfile('${u.id}','${escHtml(u.username || '')}','${u.userImage || ''}')">
+      ${_searchAvatarHTML(u)}
+      <div class="search-result-info">
+        <span class="search-result-username">@${escHtml(u.username || '')}</span>
+        ${isMe ? '<span class="search-result-you">Tú</span>' : ''}
+      </div>
+      ${removeBtn}
     </div>`;
+}
+
+// ─── Render states ────────────────────────────────────────────────
+function _renderSearchEmpty() {
+  const recent  = _getRecent();
+  const container = document.getElementById('searchResults');
+  if (!recent.length) {
+    container.innerHTML = `
+      <div class="search-empty-state">
+        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" fill="none" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>Escribe para buscar escritores</p>
+      </div>`;
+    return;
+  }
+  container.innerHTML = `
+    <div class="search-section-label">Búsquedas recientes</div>
+    ${recent.map(u => _resultItemHTML(u, true)).join('')}`;
 }
 
 function _renderSearchLoading() {
@@ -2080,22 +2153,15 @@ function _renderSearchResults(results, term) {
       </div>`;
     return;
   }
-  container.innerHTML = results.map(u => {
-    const ini     = (u.username || '?').slice(0, 2).toUpperCase();
-    const isMe    = u.id === session.userId;
-    return `
-      <button class="search-result-item" onclick="searchGoToProfile('${u.id}')">
-        <div class="search-result-avatar">${ini}</div>
-        <div class="search-result-info">
-          <span class="search-result-username">@${escHtml(u.username || '')}</span>
-          ${isMe ? '<span class="search-result-you">Tú</span>' : ''}
-        </div>
-        <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="1.5"><polyline points="9 18 15 12 9 6"/></svg>
-      </button>`;
-  }).join('');
+  container.innerHTML = results.map(u => _resultItemHTML(u, false)).join('');
 }
 
-function searchGoToProfile(userId) {
+// ─── Navigate to profile + save to recents ────────────────────────
+function searchGoToProfile(userId, username = '', userImage = '') {
+  // Save to recents before navigating
+  if (userId && username) {
+    _addRecent({ id: userId, username, userImage: userImage || null });
+  }
   closeAllModals();
   openUserProfile(userId);
 }
@@ -2131,7 +2197,7 @@ Object.assign(window, {
   openBugReportModal, doSendBugReport,
   confirmLogout, doLogout,
   initEditProfilePage, onAvatarFileSelected, removeEditAvatar, doSaveProfile,
-  openSearchModal, onSearchInput, clearSearch, searchGoToProfile,
+  openSearchModal, onSearchInput, clearSearch, searchGoToProfile, removeRecentSearch,
   openUserProfile, retryUserProfile, toggleFollowUser, toggleBlockUser,
   openModal, closeAllModals, openModalMode,
   submitWordsStep1, submitWordsStory,

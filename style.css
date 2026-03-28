@@ -1528,14 +1528,28 @@ footer { padding: 2.5rem 3rem; border-top: 1px solid var(--gray-700); background
   width: 38px; height: 38px; border-radius: 50%;
   background: var(--black); color: var(--white);
   display: flex; align-items: center; justify-content: center;
-  font-size: 0.68rem; font-weight: 600; flex-shrink: 0;
+  font-size: 0.68rem; font-weight: 600; flex-shrink: 0; overflow: hidden;
 }
+.search-result-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .search-result-info { flex: 1; min-width: 0; }
 .search-result-username { font-size: 0.88rem; font-weight: 500; color: var(--black); }
 .search-result-you {
   display: inline-block; margin-left: 0.5rem; font-size: 0.6rem;
   font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
   color: var(--gray-300);
+}
+.search-chevron { color: var(--gray-300); flex-shrink: 0; }
+.search-remove-btn {
+  flex-shrink: 0; background: none; border: none; cursor: pointer; padding: 0.25rem;
+  color: var(--gray-300); display: flex; align-items: center;
+  transition: color var(--t); border-radius: 50%;
+}
+.search-remove-btn:hover { color: var(--black); }
+.search-section-label {
+  padding: 0.65rem 1.25rem 0.4rem;
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gray-300);
+  border-bottom: 1px solid var(--gray-50);
 }
 
 /* Dark mode search */
@@ -1544,6 +1558,8 @@ footer { padding: 2.5rem 3rem; border-top: 1px solid var(--gray-700); background
 [data-theme="dark"] .search-result-item:hover { background: var(--gray-50); }
 [data-theme="dark"] .search-result-item { border-bottom-color: var(--gray-100); }
 [data-theme="dark"] .search-modal-header { border-bottom-color: var(--gray-100); }
+[data-theme="dark"] .search-section-label { color: var(--gray-300); border-bottom-color: var(--gray-100); }
+[data-theme="dark"] .search-remove-btn:hover { color: var(--black); }
 [data-theme="dark"] .nav-search-btn { border-color: var(--gray-100); color: var(--gray-300); }
 [data-theme="dark"] .nav-search-btn:hover { border-color: var(--black); color: var(--black); }
 
