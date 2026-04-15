@@ -84,3 +84,17 @@ export async function getUserCooperative() {
     story:  result?.story  ?? null,
   };
 }
+
+// ─────────────────────────────────────────────────────────────────
+//  COOPERATIVE: add paragraph  →  POST /functions/v2_addCooperativeStory
+// ─────────────────────────────────────────────────────────────────
+/**
+ * Adds a new paragraph to an existing cooperative story.
+ *
+ * @param {string} id       - Story ID
+ * @param {string} title    - Story title
+ * @param {{ text: string, author: string, userId: string }} content - New paragraph
+ */
+export async function addCooperativeStory(id, title, content) {
+  await apiPOST('functions/v2_addCooperativeStory', { id, title, content }, /* withToken= */ true);
+}

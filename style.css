@@ -994,6 +994,45 @@ footer { padding: 2.5rem 3rem; border-top: 1px solid var(--gray-700); background
 .continue-context-title { font-family: var(--grand); font-size: 1.2rem; margin-bottom: 0.5rem; }
 .continue-context-text { font-size: 0.9rem; line-height: 1.75; color: var(--gray-700); font-weight: 300; }
 
+/* Full paragraph list in collab continue modal */
+.continue-story-title {
+  font-family: var(--grand); font-size: 1.4rem; font-weight: 400;
+  margin-bottom: 1rem; line-height: 1.2;
+}
+.continue-paragraphs {
+  max-height: 280px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 0;
+  border: 1px solid var(--gray-100);
+  border-radius: 0;
+}
+.continue-para-block {
+  padding: 1rem 1.1rem; border-left: 3px solid;
+  border-bottom: 1px solid var(--gray-100);
+}
+.continue-para-block:last-child { border-bottom: none; }
+.continue-para-text {
+  font-size: 0.88rem; line-height: 1.8; font-weight: 300;
+  color: var(--gray-700); margin-bottom: 0.6rem;
+}
+.continue-para-author {
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.continue-para-avatar {
+  width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0;
+  background: var(--black); color: var(--white);
+  font-size: 0.5rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.continue-para-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.continue-para-name {
+  font-size: 0.72rem; font-weight: 500; color: var(--gray-500);
+}
+.continue-empty {
+  font-size: 0.85rem; color: var(--gray-300); padding: 1rem;
+  text-align: center; font-weight: 300;
+}
+
 .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
 .choice-card { padding: 2rem 1.5rem; border: 1px solid var(--gray-100); cursor: pointer; transition: all var(--t); text-align: center; }
 .choice-card:hover { border-color: var(--black); background: var(--black); color: var(--white); }

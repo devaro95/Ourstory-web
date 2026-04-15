@@ -21,7 +21,8 @@ import { followUser, unfollowUser,
          blockUser, unblockUser }           from './services/SocialService.js';
 import { updateProfile }                    from './services/UserProfileService.js';
 import { getCurrentUserWords, addWords,
-         getUserCooperative }               from './services/StoryCreateService.js';
+         getUserCooperative,
+         addCooperativeStory }              from './services/StoryCreateService.js';
 
 // ═══════════════════════════════════════════════════════════════════
 //  NAV
@@ -227,6 +228,7 @@ let _prevHash      = '#home';
 let _prevScrollY   = 0;        // scroll position to restore when going back
 let _hasHistory    = false;    // true only when detail was opened via internal navigation
 let currentStory   = null;     // story currently shown in detail page
+let _collabAssignedStory = null; // story assigned for cooperative continuation
 
 function goBack() {
   _restoreScroll = true;       // flag: skip scrollTo(0,0) on the next _activatePage
@@ -1090,6 +1092,7 @@ function submitWordsStory() {
 // ─── COLABORATIVA ────────────────────────────────────────────────
 
 function resetCollabModal() {
+  _collabAssignedStory = null;
   document.getElementById('collabAssignLoading').style.display = 'flex';
   document.getElementById('collabContinueUI').style.display    = 'none';
   document.getElementById('collabStartUI').style.display       = 'none';
@@ -1115,15 +1118,41 @@ async function initCollabModal() {
 
     if (action === 'CONTINUE' && story) {
       // User must add a paragraph to an existing story
+      _collabAssignedStory = story; // store for submitCollabParagraph
       document.getElementById('collabStepTitle').textContent = 'Continúa la historia';
 
-      // Show last paragraph as context
       const contents = Array.isArray(story.content) ? story.content : [];
-      const lastContent = contents[contents.length - 1];
-      const lastText = lastContent?.text || '';
 
+      // Title
       document.getElementById('collabContextTitle').textContent = story.title || 'Sin título';
-      document.getElementById('collabContextText').textContent  = lastText;
+
+      // Render all paragraphs with authors
+      const parasEl = document.getElementById('collabContextParagraphs');
+      if (!contents.length) {
+        parasEl.innerHTML = '<p class="continue-empty">Sé el primero en añadir un párrafo.</p>';
+      } else {
+        const colors = ['#f6366f','#3b82f6','#10b981','#f59e0b','#8b5cf6','#06b6d4'];
+        parasEl.innerHTML = contents.map((c, i) => {
+          const color  = colors[i % colors.length];
+          const ini    = (c.author || '?').slice(0, 2).toUpperCase();
+          const avatar = c.userImage
+            ? `<img src="${c.userImage}" alt="${escHtml(c.author || '')}">`
+            : ini;
+          return `
+            <div class="continue-para-block" style="border-left-color:${color}">
+              <p class="continue-para-text">${escHtml(c.text || '')}</p>
+              <div class="continue-para-author">
+                <div class="continue-para-avatar">${avatar}</div>
+                <span class="continue-para-name">${escHtml(c.author || 'Anónimo')}</span>
+              </div>
+            </div>`;
+        }).join('');
+        // Scroll to bottom of paragraphs so user sees the latest
+        setTimeout(() => {
+          parasEl.scrollTop = parasEl.scrollHeight;
+        }, 50);
+      }
+
       document.getElementById('collabContinueUI').style.display = 'block';
 
     } else {
@@ -1142,11 +1171,38 @@ async function initCollabModal() {
   }
 }
 
-function submitCollabParagraph() {
-  if (document.getElementById('collabContinueText').value.trim().length < 30) {
+async function submitCollabParagraph() {
+  const text = document.getElementById('collabContinueText').value.trim();
+  if (text.length < 30) {
     showToast('El párrafo debe tener al menos 30 caracteres'); return;
   }
-  closeAllModals(); showToast('¡Párrafo añadido! ✓');
+  if (!_collabAssignedStory) {
+    showToast('Error: no hay historia asignada'); return;
+  }
+
+  const btn = document.querySelector('#collabContinueUI .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Enviando...'; }
+
+  try {
+    const content = {
+      text,
+      author: session.alias || session.username || '',
+      userId: session.userId || '',
+    };
+    await addCooperativeStory(
+      _collabAssignedStory.id,
+      _collabAssignedStory.title || '',
+      content
+    );
+    _collabAssignedStory = null;
+    closeAllModals();
+    showToast('¡Párrafo añadido! ✓');
+  } catch (e) {
+    console.error('addCooperativeStory error:', e);
+    showToast('Error al enviar el párrafo. Inténtalo de nuevo.');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Añadir párrafo'; }
+  }
 }
 
 function submitCollabNew() {
