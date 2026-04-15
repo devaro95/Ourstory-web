@@ -1123,8 +1123,10 @@ async function initCollabModal() {
 
       const contents = Array.isArray(story.content) ? story.content : [];
 
-      // Title
+      // Title + paragraph count
       document.getElementById('collabContextTitle').textContent = story.title || 'Sin título';
+      document.getElementById('collabContextMeta').textContent  =
+        `${contents.length} párrafo${contents.length !== 1 ? 's' : ''}`;
 
       // Render all paragraphs with authors
       const parasEl = document.getElementById('collabContextParagraphs');
@@ -1133,13 +1135,12 @@ async function initCollabModal() {
       } else {
         const colors = ['#f6366f','#3b82f6','#10b981','#f59e0b','#8b5cf6','#06b6d4'];
         parasEl.innerHTML = contents.map((c, i) => {
-          const color  = colors[i % colors.length];
           const ini    = (c.author || '?').slice(0, 2).toUpperCase();
           const avatar = c.userImage
             ? `<img src="${c.userImage}" alt="${escHtml(c.author || '')}">`
             : ini;
           return `
-            <div class="continue-para-block" style="border-left-color:${color}">
+            <div class="continue-para-block">
               <p class="continue-para-text">${escHtml(c.text || '')}</p>
               <div class="continue-para-author">
                 <div class="continue-para-avatar">${avatar}</div>
@@ -1147,9 +1148,19 @@ async function initCollabModal() {
               </div>
             </div>`;
         }).join('');
-        // Scroll to bottom of paragraphs so user sees the latest
+
+        // Hide fade when scrolled to bottom, show when not
+        const fade = parasEl.nextElementSibling;
+        const updateFade = () => {
+          const atBottom = parasEl.scrollHeight - parasEl.scrollTop <= parasEl.clientHeight + 4;
+          if (fade) fade.style.opacity = atBottom ? '0' : '1';
+        };
+        parasEl.addEventListener('scroll', updateFade, { passive: true });
+
+        // Scroll to bottom to show latest paragraph
         setTimeout(() => {
           parasEl.scrollTop = parasEl.scrollHeight;
+          updateFade();
         }, 50);
       }
 

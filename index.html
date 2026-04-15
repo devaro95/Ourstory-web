@@ -916,14 +916,22 @@
     <div id="collabContinueUI" style="display:none;">
       <p style="font-size:.88rem;color:var(--gray-500);line-height:1.7;margin-bottom:1.25rem;font-weight:300;">Se te ha asignado esta historia. Lee los párrafos anteriores y añade el siguiente.</p>
 
-      <!-- Story title -->
+      <!-- Story title + paragraph count label -->
       <div class="continue-story-title" id="collabContextTitle"></div>
+      <div class="continue-story-meta" id="collabContextMeta"></div>
 
-      <!-- All paragraphs scroll area -->
-      <div class="continue-paragraphs" id="collabContextParagraphs"></div>
+      <!-- Paragraphs reader -->
+      <div class="continue-paragraphs-wrap">
+        <div class="continue-paragraphs-label">
+          <span>Historia en curso — desplázate para leer</span>
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="continue-paragraphs" id="collabContextParagraphs"></div>
+        <div class="continue-paragraphs-fade"></div>
+      </div>
 
       <!-- Write area -->
-      <div class="modal-section-label" style="margin-top:1.25rem;">Tu párrafo</div>
+      <div class="modal-section-label" style="margin-top:1.5rem;">Tu párrafo</div>
       <textarea class="story-textarea" id="collabContinueText" placeholder="Continúa la historia con tu párrafo..." oninput="updateCount('collabContCount',this.value)"></textarea>
       <div class="modal-footer">
         <span class="char-count"><span id="collabContCount">0</span> caracteres</span>
