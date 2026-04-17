@@ -1133,7 +1133,6 @@ async function initCollabModal() {
       if (!contents.length) {
         parasEl.innerHTML = '<p class="continue-empty">Sé el primero en añadir un párrafo.</p>';
       } else {
-        const colors = ['#f6366f','#3b82f6','#10b981','#f59e0b','#8b5cf6','#06b6d4'];
         parasEl.innerHTML = contents.map((c, i) => {
           const ini    = (c.author || '?').slice(0, 2).toUpperCase();
           const avatar = c.userImage
@@ -1141,27 +1140,19 @@ async function initCollabModal() {
             : ini;
           return `
             <div class="continue-para-block">
-              <p class="continue-para-text">${escHtml(c.text || '')}</p>
-              <div class="continue-para-author">
-                <div class="continue-para-avatar">${avatar}</div>
-                <span class="continue-para-name">${escHtml(c.author || 'Anónimo')}</span>
+              <span class="continue-para-num">${String(i + 1).padStart(2, '0')}</span>
+              <div class="continue-para-content">
+                <p class="continue-para-text">${escHtml(c.text || '')}</p>
+                <div class="continue-para-author">
+                  <div class="continue-para-avatar">${avatar}</div>
+                  <span class="continue-para-name">${escHtml(c.author || 'Anónimo')}</span>
+                </div>
               </div>
             </div>`;
         }).join('');
 
-        // Hide fade when scrolled to bottom, show when not
-        const fade = parasEl.nextElementSibling;
-        const updateFade = () => {
-          const atBottom = parasEl.scrollHeight - parasEl.scrollTop <= parasEl.clientHeight + 4;
-          if (fade) fade.style.opacity = atBottom ? '0' : '1';
-        };
-        parasEl.addEventListener('scroll', updateFade, { passive: true });
-
-        // Scroll to bottom to show latest paragraph
-        setTimeout(() => {
-          parasEl.scrollTop = parasEl.scrollHeight;
-          updateFade();
-        }, 50);
+        // Scroll to bottom so user sees the most recent paragraph
+        setTimeout(() => { parasEl.scrollTop = parasEl.scrollHeight; }, 50);
       }
 
       document.getElementById('collabContinueUI').style.display = 'block';

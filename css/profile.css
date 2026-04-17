@@ -1,0 +1,65 @@
+/* ═══════════════════════════════════════════
+   PROFILE PAGE
+═══════════════════════════════════════════ */
+#profile-page { padding-top: 5rem; }
+
+
+.profile-header { display: grid; grid-template-columns: 1fr 1fr; }
+.profile-header-left { padding: 4rem 3rem; border-right: 1px solid var(--gray-100); display: flex; align-items: center; gap: 3rem; }
+.profile-avatar { width: 120px; height: 120px; border-radius: 50%; background: var(--gray-700); flex-shrink: 0; overflow: hidden; border: 3px solid var(--black); display: flex; align-items: center; justify-content: center; }
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.profile-avatar-initials { font-family: var(--grand); font-size: 2.5rem; color: var(--white); }
+.profile-name { font-family: var(--grand); font-size: 2.8rem; line-height: 1; margin-bottom: 0.4rem; }
+.profile-username { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 1rem; }
+.profile-bio { font-size: 0.9rem; color: var(--gray-700); line-height: 1.65; font-weight: 300; max-width: 36ch; }
+.profile-header-right { padding: 4rem 3rem; display: flex; align-items: center; }
+.profile-stats-grid { display: grid; grid-template-columns: repeat(3,1fr); width: 100%; }
+.profile-stat { padding: 2rem; border-right: 1px solid var(--gray-100); text-align: center; }
+.profile-stat:last-child { border-right: none; }
+.profile-stat-number { font-family: var(--grand); font-size: 3rem; line-height: 1; margin-bottom: 0.4rem; }
+.profile-stat-label { font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-500); }
+
+.profile-tabs-row { display: flex; border-top: 1px solid var(--gray-100); border-bottom: 1px solid var(--gray-100); padding: 0 3rem; }
+.profile-tab { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-500); padding: 1.25rem 1.5rem 1.25rem 0; border-bottom: 2px solid transparent; cursor: pointer; transition: all var(--t); margin-bottom: -1px; background: none; border-left: none; border-right: none; border-top: none; }
+.profile-tab.active { color: var(--black); border-bottom-color: var(--black); }
+.profile-tab:hover { color: var(--black); }
+
+.profile-content { padding: 4rem 3rem; }
+.profile-tab-panel { display: none; }
+.profile-tab-panel.active { display: block; }
+.profile-stories-grid { display: grid; grid-template-columns: repeat(3,1fr); border: 1px solid var(--gray-100); }
+
+.loading-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem; gap: 1rem; }
+.loading-spinner { width: 32px; height: 32px; border: 2px solid var(--gray-100); border-top-color: var(--black); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading-text { font-size: 0.8rem; color: var(--gray-500); }
+.error-state { padding: 3rem; text-align: center; border: 1px solid var(--gray-100); }
+.error-text { font-size: 0.9rem; color: var(--gray-500); margin-bottom: 1rem; }
+.profile-empty { text-align: center; padding: 4rem; color: var(--gray-300); grid-column: 1/-1; }
+.profile-empty-icon { font-family: var(--grand); font-size: 3.5rem; margin-bottom: 0.75rem; }
+.profile-empty-text { font-size: 0.9rem; font-weight: 300; }
+
+/* Blocked users list */
+.blocked-list { display: flex; flex-direction: column; border: 1px solid var(--gray-100); }
+.blocked-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray-100);
+}
+.blocked-item:last-child { border-bottom: none; }
+.blocked-item-info { display: flex; align-items: center; gap: 0.75rem; }
+.blocked-item-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--gray-100); display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 600; color: var(--gray-500); flex-shrink: 0;
+}
+.blocked-item-username { font-size: 0.85rem; font-weight: 500; }
+.blocked-item-id { font-size: 0.72rem; color: var(--gray-300); margin-top: 0.1rem; }
+.unblock-btn {
+  font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--gray-500); background: none; border: 1px solid var(--gray-100);
+  padding: 0.45rem 1rem; cursor: pointer; transition: all var(--t); flex-shrink: 0;
+}
+.unblock-btn:hover { border-color: var(--red); color: var(--red); }
+.blocked-empty { text-align: center; padding: 4rem; color: var(--gray-300); }
+.blocked-empty-icon { font-family: var(--grand); font-size: 3rem; margin-bottom: 0.75rem; }
+.blocked-empty-text { font-size: 0.9rem; font-weight: 300; }
+

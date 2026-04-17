@@ -1,0 +1,68 @@
+/* ═══════════════════════════════════════════
+   CHANGE PASSWORD MODAL
+═══════════════════════════════════════════ */
+#modalChangePassword .modal { max-width: 460px; }
+
+/* ─── LIKE animation (heart pop + sparks) ─── */
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.4); }
+  50%  { transform: scale(0.9); }
+  75%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+@keyframes sparkFly {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--sx), var(--sy)) scale(0); opacity: 0; }
+}
+@keyframes saveRing {
+  0%   { transform: scale(0.5); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+@keyframes bookmarkPop {
+  0%   { transform: scale(1) rotate(0deg); }
+  30%  { transform: scale(1.35) rotate(-8deg); }
+  60%  { transform: scale(0.9) rotate(4deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+.action-btn { position: relative; overflow: visible; }
+
+.action-btn.animating-like svg,
+.detail-action-btn.animating-like svg,
+.detail-collab-action.animating-like svg { animation: heartPop 0.45s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
+.action-btn.animating-save svg,
+.detail-action-btn.animating-save svg,
+.detail-collab-action.animating-save svg { animation: bookmarkPop 0.4s cubic-bezier(0.36,0.07,0.19,0.97) forwards; }
+
+/* Spark particle */
+.spark {
+  position: absolute; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--word-accent);
+  pointer-events: none; top: 50%; left: 50%;
+  margin: -2.5px 0 0 -2.5px;
+  animation: sparkFly 0.55s ease-out forwards;
+}
+/* Save ring pulse */
+.save-ring {
+  position: absolute; top: 50%; left: 50%;
+  width: 18px; height: 18px;
+  margin: -9px 0 0 -9px;
+  border: 1.5px solid var(--black);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: saveRing 0.5s ease-out forwards;
+}
+
+/* Detail page action buttons also need overflow visible + relative positioning */
+.detail-action-btn  { overflow: visible; position: relative; }
+.detail-collab-action { overflow: visible; position: relative; }
+/* Infinite scroll loading indicator */
+.infinite-spinner {
+  display: none; align-items: center; justify-content: center;
+  padding: 1.5rem 0;
+}
+.infinite-spinner .loading-spinner { width: 18px; height: 18px; border-width: 2px; }
+
+.toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 300; background: var(--black); color: var(--white); font-size: 0.78rem; padding: 1rem 1.5rem; letter-spacing: 0.04em; transform: translateY(20px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+.toast.show { transform: translateY(0); opacity: 1; }

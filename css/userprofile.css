@@ -1,0 +1,109 @@
+/* ═══════════════════════════════════════════
+   EDIT PROFILE PAGE
+═══════════════════════════════════════════ */
+#edit-profile-page { padding-top: 5rem; }
+
+
+.edit-profile-wrap {
+  max-width: 560px; margin: 0 auto; padding: 3rem;
+}
+.edit-profile-header { margin-bottom: 2.5rem; }
+.edit-profile-title { font-family: var(--grand); font-size: 2.5rem; line-height: 1; margin-bottom: 0.4rem; }
+.edit-profile-subtitle { font-size: 0.85rem; color: var(--gray-500); font-weight: 300; }
+
+/* Avatar picker */
+.edit-avatar-section {
+  display: flex; align-items: center; gap: 1.5rem;
+  padding: 1.75rem; border: 1px solid var(--gray-100);
+  margin-bottom: 2rem;
+}
+.edit-avatar-preview {
+  width: 80px; height: 80px; border-radius: 50%; background: var(--gray-700);
+  flex-shrink: 0; overflow: hidden; display: flex; align-items: center;
+  justify-content: center; border: 3px solid var(--black);
+}
+.edit-avatar-preview img { width: 100%; height: 100%; object-fit: cover; }
+.edit-avatar-initials { font-family: var(--grand); font-size: 1.8rem; color: var(--white); }
+.edit-avatar-actions { display: flex; flex-direction: column; gap: 0.5rem; }
+.edit-avatar-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 0.75rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--white); background: var(--black); border: 1px solid var(--black);
+  padding: 0.55rem 1.1rem; cursor: pointer; transition: all var(--t);
+}
+.edit-avatar-btn:hover { background: var(--white); color: var(--black); }
+.edit-avatar-remove {
+  font-size: 0.72rem; font-weight: 500; color: var(--red);
+  background: none; border: none; cursor: pointer; padding: 0;
+  text-align: left; transition: opacity var(--t);
+}
+.edit-avatar-remove:hover { opacity: 0.7; }
+.edit-avatar-hint { font-size: 0.7rem; color: var(--gray-300); margin-top: 0.25rem; }
+
+.edit-profile-fields { margin-bottom: 2rem; }
+.edit-profile-actions { display: flex; align-items: center; justify-content: flex-end; gap: 1rem; }
+.edit-profile-actions .btn-secondary,
+.edit-profile-actions .login-btn { width: 160px; height: 46px; margin-top: 0; padding: 0; justify-content: center; }
+
+@media (max-width: 900px) {
+  .edit-profile-wrap { padding: 2rem 1.5rem; }
+  .edit-avatar-section { flex-direction: column; align-items: flex-start; }
+}
+
+/* Collab authors dialog */
+.collab-authors-list { display: flex; flex-direction: column; gap: 0; margin-top: 0.5rem; }
+.collab-dialog-author {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.9rem 0; border-bottom: 1px solid var(--gray-100);
+}
+.collab-dialog-author:last-child { border-bottom: none; }
+.collab-dialog-avatar {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--gray-700);
+  flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center;
+}
+.collab-dialog-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.collab-dialog-ini { font-family: var(--grand); font-size: 1rem; color: var(--white); }
+.collab-dialog-info { flex: 1; min-width: 0; }
+.collab-dialog-name { font-size: 0.85rem; font-weight: 500; }
+.collab-dialog-you {
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gray-300); flex-shrink: 0;
+}
+.collab-dialog-action {
+  flex-shrink: 0; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.08em;
+  text-transform: uppercase; background: none; border: 1px solid var(--gray-100);
+  padding: 0.4rem 0.9rem; cursor: pointer; color: var(--gray-500);
+  transition: all var(--t); font-family: var(--sans);
+}
+.collab-dialog-action:hover { border-color: var(--black); color: var(--black); }
+
+/* Settings tab CSS */
+/* ═══════════════════════════════════════════
+   SETTINGS TAB (inside profile page)
+═══════════════════════════════════════════ */
+.settings-list {
+  display: flex; flex-direction: column;
+  border: 1px solid var(--gray-100); max-width: 560px;
+}
+.settings-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.4rem 1.5rem; border-bottom: 1px solid var(--gray-100);
+  cursor: pointer; transition: background var(--t); background: none;
+  width: 100%; text-align: left; border-left: none; border-right: none; border-top: none;
+}
+.settings-item:last-child { border-bottom: none; }
+.settings-item:hover { background: var(--gray-50); }
+.settings-item.danger:hover { background: #fdf0f0; }
+.settings-item-left { display: flex; align-items: center; gap: 1rem; }
+.settings-item-icon {
+  width: 36px; height: 36px; border: 1px solid var(--gray-100);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.settings-item-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.settings-item.danger .settings-item-icon { border-color: #f5c6c6; }
+.settings-item.danger .settings-item-icon svg,
+.settings-item.danger .settings-item-title { color: var(--red); }
+.settings-item-title { font-size: 0.88rem; font-weight: 500; }
+.settings-item-desc { font-size: 0.75rem; color: var(--gray-300); margin-top: 0.1rem; }
+.settings-item-arrow { color: var(--gray-300); font-size: 1rem; }
+

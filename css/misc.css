@@ -1,0 +1,42 @@
+/* 404 page */
+.not-found-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 8rem 2rem; text-align: center; gap: 1.5rem;
+}
+.not-found-glyph { font-size: 3rem; color: var(--gray-100); line-height: 1; }
+.not-found-title { font-family: var(--grand); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; line-height: 1.1; }
+.not-found-sub { font-size: 0.95rem; color: var(--gray-500); max-width: 36ch; line-height: 1.7; font-weight: 300; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media (max-width: 900px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  #login-page.active { grid-template-columns: 1fr; }
+  .login-left { display: none; }
+  .login-right { padding: 3rem 1.5rem; min-height: 100vh; justify-content: flex-start; padding-top: 5rem; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-left { border-right: none; border-bottom: 1px solid var(--gray-100); padding: 2.5rem 1.5rem; }
+  .hero-right { padding: 2rem 1.5rem; }
+  .section-divider { grid-template-columns: 1fr; }
+  .sdl { border-right: none; border-bottom: 1px solid var(--gray-100); }
+  .modes-section { grid-template-columns: 1fr; }
+  .mode-card { border-right: none; border-bottom: 1px solid var(--gray-100); }
+  .feed-tabs-nav { padding: 0 1.5rem; overflow-x: auto; }
+  .feed-tab-panel { padding: 2rem 1.5rem; }
+  .story-grid-3 { grid-template-columns: 1fr; }
+  .story-grid-3 .story-card:nth-child(3n) { border-right: none; }
+  .story-grid-3 .story-card:nth-last-child(-n+3) { border-bottom: 1px solid var(--gray-100); }
+  .story-grid-3 .story-card:last-child { border-bottom: none; }
+  .cta-section { padding: 5rem 1.5rem; }
+  footer { flex-direction: column; gap: 1.5rem; align-items: flex-start; padding: 2.5rem 1.5rem; }
+  .profile-header { grid-template-columns: 1fr; }
+  .profile-header-left { border-right: none; border-bottom: 1px solid var(--gray-100); flex-direction: column; gap: 1.5rem; padding: 3rem 1.5rem; }
+  .profile-header-right { padding: 2rem 1.5rem; }
+  .profile-content { padding: 2rem 1.5rem; }
+  .profile-stories-grid { grid-template-columns: 1fr; }
+  .profile-tabs-row { padding: 0 1.5rem; }
+  .choice-grid { grid-template-columns: 1fr; }
+}
